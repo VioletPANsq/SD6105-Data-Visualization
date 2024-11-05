@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olympic Hosting Map</title>
+  <style>
+    /* Styles for the map and tooltip */
+    .country {
+      stroke-width: 0.5px;
+    }
+    .tooltip {
+      position: absolute;
+      background: #fff;
+      padding: 5px;
+      border: 1px solid #ccc;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="tooltip" id="tooltip"></div>
+  
+  <!-- D3.js Library -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script>
+    const width = 1000, height = 1000;
+    const svg = d3.select("#map")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+
+    // Define projection and path generator
+    const projection = d3.geoMercator()
+                         .scale(150)
+                         .translate([width / 2, height / 2]);
+    const path = d3.geoPath().projection(projection);
+
+    // Load map and data
+    d3.json("countries.geo copy.json").then(worldData => {
+      d3.csv("olympic_hosts_by_country.csv").then(data => {
+        
+        // Create color scale based on hosting frequency
+        const maxHostingTimes = d3.max(data, d => +d.Total);
+        const colorScale = d3.scaleSequential(d3.interpolateBlues)
+                             .domain([0, maxHostingTimes]);
+        
+        // Draw map
+        svg.selectAll("path")
+           .data(worldData.features)
+           .enter()
+           .append("path")
+           .attr("d", path)
+           .attr("fill", "#ccccff") 
+           .attr("stroke", "black") 
+           .attr("stroke-width", 0.5)
+           .attr("class", "country")
+           .attr("fill", d => {
+             const countryData = data.find(c => c.Country === d.properties.name);
+             return countryData ? colorScale(+countryData.Total) : "#ccc";
+           })
+           .on("mouseover", (event, d) => {
+             const countryData = data.find(c => c.Country === d.properties.name);
+             if (countryData) {
+               d3.select("#tooltip")
+                 .style("display", "block")
+                 .html(`Country: ${countryData.Country}<br>
+                        Total: ${countryData.Total}<br>
+                        Summer Olympics: ${countryData["Summer Olympics"]}<br>
+                        Winter Olympics: ${countryData["Winter Olympics"]}`);
+             }
+           })
+           .on("mousemove", event => {
+             d3.select("#tooltip")
+               .style("left", (event.pageX + 5) + "px")
+               .style("top", (event.pageY + 5) + "px");
+           })
+           .on("mouseout", () => {
+             d3.select("#tooltip").style("display", "none");
+           });
+      });
+    });
+  </script>
+</body>
+</html>
