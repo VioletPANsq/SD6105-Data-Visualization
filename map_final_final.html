@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olympic Hosting Map</title>
+  <style>
+  /* 页面背景：渐变动画背景 
+  body {
+  background: linear-gradient(180deg, #E0F7FA, #B2EBF2, #E0F2F1);
+  background-size: 400% 400%;
+  animation: tealGradient 15s ease infinite;
+}
+
+@keyframes tealGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+*/
+/* 国家区域的默认样式 */
+.country {
+  stroke-width: 1.2px;
+  transition: fill 0.3s ease, stroke 0.3s ease; /* 平滑过渡效果 */
+}
+
+/* 增强 tooltip 样式 */
+.tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8); /* 改为深色半透明背景 */
+  padding: 12px;
+  border: 1px solid #FFD700; /* 改为金色边框 */
+  border-radius: 10px; /* 圆角 */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4); /* 加强投影效果 */
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #fff; /* 改为白色文字，搭配深色背景 */
+  display: none;
+  pointer-events: none;
+  z-index: 10;
+  transition: all 0.3s ease; /* 增加淡入淡出效果 */
+}
+
+/* tooltip 标题样式 */
+.tooltip h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #FFD700; /* 标题金色 */
+}
+
+/* tooltip 数据文字样式 */
+.tooltip p {
+  margin: 5px 0 0;
+  line-height: 1.5;
+}
+
+/* 定义国家区域的悬停效果：放大和发光 */
+.country:hover {
+  stroke: #DAA520; /* 金色边框 */
+  stroke-width: 2px;
+  filter: drop-shadow(0px 0px 5px #DAA520); /* 发光效果 */
+  transform: scale(1); /* 放大 */
+  transition: transform 0.2s ease; /* 平滑放大动画 */
+}
+
+/* 边框闪烁动画 */
+@keyframes glow {
+  0%, 100% {
+    stroke: #DAA520;
+    stroke-width: 2;
+  }
+  50% {
+    stroke: #333;
+    stroke-width: 1;
+  }
+}
+
+/* 闪光效果类 */
+.glow {
+  animation: glow 1s infinite;
+}
+
+</style>
+  
+</head>
+<body>
+  <div id="map"></div>
+  <div class="tooltip" id="tooltip"></div>
+
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script>
+    const width = 1400, height = 800;
+    const colorScale = d3.scaleSequential(d3.interpolateBlues);
+
+    // 1. 创建 SVG 容器
+    function createSVG() {
+      const svg = d3.select("#map")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+        // 添加边框矩形
+        svg.append("rect")
+            .attr("x", 10) // 左边距
+            .attr("y", 10) // 顶边距
+            .attr("width", width - 20) // 使边框略小于 SVG 宽度
+            .attr("height", height - 20) // 使边框略小于 SVG 高度
+            .attr("stroke", "black") // 边框颜色
+            .attr("stroke-width", 3) // 边框宽度
+            .attr("fill", "none"); // 确保没有填充色    
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", 80)
+            .attr("text-anchor", "middle")
+            .style("font-size", "32px") // 加大字体
+            .style("font-weight", "bold")
+            .style("fill", "black") // 改变标题颜色
+            .style("font-family", "Arial, sans-serif")
+            .style("text-transform", "uppercase") // 将标题大写
+            .style("letter-spacing", "1.5px") // 增加字母间距
+            .style("text-shadow", "2px 2px 4px rgba(0, 0, 0, 0.4)") // 添加阴影效果
+            .text("Countries That Have Hosted the Olympic Games (1896–2024)");
+
+        return svg;
+
+    }
+
+    // 2. 定义投影和路径生成器
+    function defineProjection() {
+      const projection = d3.geoEquirectangular()
+                           .scale(180)
+                           .translate([width / 2, height / 2]);
+      return d3.geoPath().projection(projection);
+    }
+
+    // 3. 加载数据
+    async function loadData() {
+      const worldData = await d3.json("countries.geo.json");
+      const hostingData = await d3.csv("olympic_hosts_by_country.csv");
+      
+      return { worldData, hostingData };
+    }
+
+    // 4. 绘制地图
+    function drawMap(svg, path, worldData, hostingData) {
+      const maxHostingTimes = d3.max(hostingData, d => +d.Total);
+      colorScale.domain([0, maxHostingTimes]);
+
+      svg.selectAll("path")
+         .data(worldData.features)
+         .enter()
+         .append("path")
+         .attr("d", path)
+         .attr("fill", d => {
+           const countryData = hostingData.find(c => c.Country === d.properties.name);
+           return countryData ? colorScale(+countryData.Total) : "#f7fbff";
+         })
+         .attr("stroke", "black")
+         .attr("stroke-width", 2)
+         .attr("class", "country");
+    }
+
+    // 5. 添加图例
+    function addLegend(svg, maxHostingTimes) {
+      const legendWidth = 200;
+      const legendHeight = 20;
+
+      const legendScale = d3.scaleLinear()
+                            .domain([0, maxHostingTimes])
+                            .range([0, legendWidth]);
+
+      const legend = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("transform", `translate(${width - 250}, ${height - 100})`);
+
+      // 渐变色条
+      legend.append("rect")
+            .attr("width", legendWidth)
+            .attr("height", legendHeight)
+            .style("fill", "url(#gradient)");
+
+      const defs = svg.append("defs");
+      const linearGradient = defs.append("linearGradient")
+                                 .attr("id", "gradient");
+
+      linearGradient.selectAll("stop")
+                    .data(colorScale.ticks().map((t, i, n) => ({
+                      offset: `${100 * i / n.length}%`,
+                      color: colorScale(t)
+                    })))
+                    .enter().append("stop")
+                    .attr("offset", d => d.offset)
+                    .attr("stop-color", d => d.color);
+
+      legend.append("g")
+            .attr("transform", `translate(0, ${legendHeight})`)
+            .call(d3.axisBottom(legendScale).ticks(5).tickFormat(d3.format("d")))
+            .selectAll("text") // 选择图例刻度文本
+            .style("font-weight", "bold"); // 设置加粗
+      // 添加说明文字
+      legend.append("text")
+            .attr("x", legendWidth / 2)
+            .attr("y", legendHeight + 30) // 位置在图例下方
+            .attr("text-anchor", "middle")
+            .style("font-size", "12px")
+            .style("font-weight", "bold")
+            .text("Number of Olympic Games Hosted"); // 说明文字内容
+    }
+    // 6. 添加悬停效果
+    function addTooltipAndHoverEffects(svg, hostingData) {
+      svg.selectAll(".country")
+          .on("mouseover", function (event, d) {
+            // 查找对应的国家数据
+            const countryData = hostingData.find(c => c.Country === d.properties.name);
+
+            // 显示 tooltip
+            if (countryData) {
+              d3.select("#tooltip")
+                .style("display", "block")
+                .html(`
+                  <h3 style="font-weight: bold; color: #FFD700;">🌍 ${countryData.Country}</h3> <!-- 标题加粗，改变颜色 -->
+                  <p><span style="font-weight: bold; color: #FFFFFF;">🌐 Total Hosted Olympics:</span>
+                     <span style="font-weight: bold; color: #FFFFFF;">${countryData.Total}</span></p>
+                  <p><span style="font-weight: bold; color: #A52A2A;">🏖️ Summer Olympics:</span> 
+                     <span style="font-weight: bold; color: #A52A2A;">${countryData["Summer Olympics"]}</span></p>
+                  <p><span style="font-weight: bold; color: #4682B4;">❄️ Winter Olympics:</span> 
+                     <span style="font-weight: bold; color: #4682B4;">${countryData["Winter Olympics"]}</span></p>
+                 `); 
+               }else {
+        // 没有奥运会数据时，仅显示国家名称
+        d3.select("#tooltip")
+          .style("display", "block")
+          .html(`<h3>🌍${d.properties.name}</h3>`);
+      }
+
+      // 突出显示效果
+      d3.select(this)
+        .style("transform-origin", "center")
+        .transition()
+        .duration(200)
+        .style("transform", "scale(1.005)")
+        .attr("stroke", "#DAA520")
+        .attr("stroke-width", 2)
+        .classed("glow", true); // 添加 glow 类以启动闪光动画
+    })
+        .on("mousemove", event => {
+          // 设置 tooltip 的位置，避免直接位于鼠标下方
+          const tooltipWidth = document.getElementById("tooltip").offsetWidth;
+          const tooltipHeight = document.getElementById("tooltip").offsetHeight;
+          
+          d3.select("#tooltip")
+            .style("left", (event.pageX + 15) + "px") // 设置 tooltip 的 X 偏移量
+            .style("top", (event.pageY - tooltipHeight - 15) + "px"); // 设置 tooltip 的 Y 偏移量
+        })
+        .on("mouseout", function () {
+          // 隐藏 tooltip
+          d3.select("#tooltip").style("display", "none");
+
+          // 取消突出显示效果
+          d3.select(this)
+            .transition()
+            .duration(200)
+            .style("transform", "scale(1)")
+            .attr("stroke", "black")
+            .attr("stroke-width", 0.5)
+            .classed("glow", false); // 移除 glow 类
+        });
+}
+
+    // 主程序：调用各函数执行操作
+    async function main() {
+      const svg = createSVG();
+      const path = defineProjection();
+      const { worldData, hostingData } = await loadData();
+      drawMap(svg, path, worldData, hostingData);
+      addTooltipAndHoverEffects(svg, hostingData); 
+      const maxHostingTimes = d3.max(hostingData, d => +d.Total);
+      addLegend(svg, maxHostingTimes);
+    }
+
+    // 启动程序
+    main();
+
+  </script>
+</body>
+</html>
