@@ -89,19 +89,133 @@
     <p>This is content for Page 2.</p>
 </div>
 
+<style>
+    /* Styling for the overall page content */
+    #page3 {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        background-color: #7af4f0;
+        color: #333;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    /* Styling for headers */
+    #page3 h1 {
+    font-size: 35px;
+    color: #1a1de8;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 2px solid #1a1de8; /* Customize the underline color and thickness */
+    padding-bottom: 5px; /* Adds space between text and underline */
+}
+
+
+    #page3 h2 {
+        font-size: 25px;
+        color: #333;
+        margin: 20px 0 10px;
+        text-align: center;
+    }
+
+    /* Styling for the screenshot container */
+    .screenshot-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+    }
+
+    /* Styling for each screenshot */
+    .screenshot-container img {
+        width: 100%;
+        max-width: 500px; /* Set a standard width */
+        height: auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 18px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    /* Hover effect for images */
+    .screenshot-container img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Optional: a caption for each image */
+    .screenshot-caption {
+        font-size: 20px;
+        color: #050000;
+        text-align: center;
+        margin-top: 5px;
+    }
+</style>
+
 <div id="page3" class="content">
-    <h2>Page 3</h2>
-        <p>This is content for Page 3.</p>
-        
-        <!-- 添加四个截图 -->
-        <div class="screenshot-container">
-            <img src="olympic_rings.png" alt="Screenshot 1" style="width:100%; max-width:400px; margin-bottom: 10px;">
-            <img src="olympic_rings.png" alt="Screenshot 2" style="width:100%; max-width:400px; margin-bottom: 10px;">
-            <img src="olympic_rings.png" alt="Screenshot 3" style="width:100%; max-width:400px; margin-bottom: 10px;">
-            <img src="olympic_rings.png" alt="Screenshot 4" style="width:100%; max-width:400px;">
+    <h1>Different Graphs Plotted Using Various Techniques</h1>
+    <h2>Main Focus</h2>
+    <div class="screenshot-container">
+        <div>
+            <img src="Medals Won over years trend.png" alt="Screenshot 1">
+            <div class="screenshot-caption">Medals Won Over the Years - USA</div>
+        </div>
+        <div>
+            <img src="Correlation Heatmap.png" alt="Screenshot 2">
+            <div class="screenshot-caption">Correlation Heatmap</div>
+        </div>
+        <div>
+            <img src="Dynamic Sentiment Bar.png" alt="Screenshot 3">
+            <div class="screenshot-caption">Dynamic Sentiment Analysis Bar</div>
+        </div>
+        <div>
+            <img src="Dynamic Ascending Bar.png" alt="Screenshot 4">
+            <div class="screenshot-caption">Dynamic Ascending Sentiment Analysis Bar</div>
+        </div>
+        <div>
+            <img src="Dynamic Sentiment Trend.png" alt="Screenshot 5">
+            <div class="screenshot-caption">Dynamic Sentiment Analysis Trend</div>
         </div>
     </div>
-    
+
+    <h1>Different Graphs and Analysis Performed</h1>
+    <h2>Secondary Focus</h2>
+    <div class="screenshot-container">
+        <div>
+            <img src="Distribution of Participants Ages.png" alt="Screenshot 6">
+            <div class="screenshot-caption">Distribution of Participants Ages vs Medal Count</div>
+        </div>
+        <div>
+            <img src="Distribution of Participants Heights.png" alt="Screenshot 7">
+            <div class="screenshot-caption">Distribution of Participants Heights vs Medal Count</div>
+        </div>
+        <div>
+            <img src="Distribution of Participants Weights.png" alt="Screenshot 8">
+            <div class="screenshot-caption">Distribution of Participants Weights vs Medal Count</div>
+        </div>
+        <div>
+            <img src="Age Distribution vs medal count.png" alt="Screenshot 9">
+            <div class="screenshot-caption">Age Distribution of Participants vs Medal Count</div>
+        </div>
+        <div>
+            <img src="Gender Distribution.png" alt="Screenshot 10">
+            <div class="screenshot-caption">Gender Distributions over years</div>
+        </div>
+        <div>
+            <img src="Height vs Weight Linear Regression.png" alt="Screenshot 11">
+            <div class="screenshot-caption">Height vs Weight of Participants Linear Regression</div>
+        </div>
+        <div>
+            <img src="Medal trend for USA.png" alt="Screenshot 12">
+            <div class="screenshot-caption">Medals Won Trend for USA</div>
+        </div>
+        <div>
+            <img src="Participants over years trend.png" alt="Screenshot 13">
+            <div class="screenshot-caption">Participants Over Years Trend</div>
+        </div>
+        <div>
+            <img src="Wordcloud for Countries with most Gold.png" alt="Screenshot 14">
+            <div class="screenshot-caption">Wordcloud for Countries with Most Gold Medals</div>
+        </div>
+    </div>
 </div>
 
 <script>
