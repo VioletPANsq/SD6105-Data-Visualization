@@ -1,0 +1,87 @@
+{
+    "2000": [
+      {"country": "United States", "gold": 37, "silver": 24, "bronze": 32, "total": 93},
+      {"country": "Russia", "gold": 32, "silver": 28, "bronze": 29, "total": 89},
+      {"country": "China", "gold": 28, "silver": 16, "bronze": 14, "total": 58},
+      {"country": "Australia", "gold": 16, "silver": 25, "bronze": 17, "total": 58},
+      {"country": "Germany", "gold": 13, "silver": 17, "bronze": 26, "total": 56},
+      {"country": "France", "gold": 13, "silver": 14, "bronze": 11, "total": 38},
+      {"country": "Italy", "gold": 13, "silver": 8, "bronze": 13, "total": 34},
+      {"country": "Netherlands", "gold": 12, "silver": 9, "bronze": 4, "total": 25},
+      {"country": "Cuba", "gold": 11, "silver": 11, "bronze": 7, "total": 29},
+      {"country": "United Kingdom", "gold": 11, "silver": 10, "bronze": 7, "total": 28}
+    ],
+    "2004": [
+      {"country": "United States", "gold": 36, "silver": 39, "bronze": 26, "total": 101},
+      {"country": "Russia", "gold": 28, "silver": 26, "bronze": 36, "total": 90},
+      {"country": "China", "gold": 32, "silver": 17, "bronze": 14, "total": 63},
+      {"country": "Australia", "gold": 17, "silver": 16, "bronze": 17, "total": 50},
+      {"country": "Germany", "gold": 13, "silver": 16, "bronze": 20, "total": 49},
+      {"country": "Japan", "gold": 16, "silver": 9, "bronze": 12, "total": 37},
+      {"country": "France", "gold": 11, "silver": 9, "bronze": 13, "total": 33},
+      {"country": "Italy", "gold": 10, "silver": 11, "bronze": 11, "total": 32},
+      {"country": "South Korea", "gold": 9, "silver": 12, "bronze": 9, "total": 30},
+      {"country": "United Kingdom", "gold": 9, "silver": 9, "bronze": 12, "total": 30}
+    ],
+    "2008": [
+      {"country": "United States", "gold": 36, "silver": 39, "bronze": 37, "total": 112},
+      {"country": "China", "gold": 48, "silver": 22, "bronze": 30, "total": 100},
+      {"country": "Russia", "gold": 24, "silver": 13, "bronze": 23, "total": 60},
+      {"country": "United Kingdom", "gold": 19, "silver": 13, "bronze": 19, "total": 51},
+      {"country": "Australia", "gold": 14, "silver": 15, "bronze": 17, "total": 46},
+      {"country": "France", "gold": 7, "silver": 16, "bronze": 20, "total": 43},
+      {"country": "Germany", "gold": 16, "silver": 11, "bronze": 14, "total": 41},
+      {"country": "South Korea", "gold": 13, "silver": 11, "bronze": 8, "total": 32},
+      {"country": "Cuba", "gold": 3, "silver": 10, "bronze": 17, "total": 30},
+      {"country": "Italy", "gold": 8, "silver": 9, "bronze": 10, "total": 27}
+    ],
+    "2012": [
+      {"country": "United States", "gold": 46, "silver": 28, "bronze": 30, "total": 104},
+      {"country": "China", "gold": 39, "silver": 31, "bronze": 22, "total": 92},
+      {"country": "Russia", "gold": 19, "silver": 20, "bronze": 27, "total": 66},
+      {"country": "United Kingdom", "gold": 29, "silver": 17, "bronze": 19, "total": 65},
+      {"country": "Germany", "gold": 11, "silver": 20, "bronze": 13, "total": 44},
+      {"country": "Japan", "gold": 7, "silver": 14, "bronze": 17, "total": 38},
+      {"country": "France", "gold": 11, "silver": 11, "bronze": 13, "total": 35},
+      {"country": "Australia", "gold": 8, "silver": 15, "bronze": 12, "total": 35},
+      {"country": "South Korea", "gold": 13, "silver": 9, "bronze": 8, "total": 30},
+      {"country": "Italy", "gold": 8, "silver": 9, "bronze": 11, "total": 28}
+    ],
+    "2016": [
+      {"country": "United States", "gold": 46, "silver": 37, "bronze": 38, "total": 121},
+      {"country": "China", "gold": 26, "silver": 18, "bronze": 26, "total": 70},
+      {"country": "United Kingdom", "gold": 27, "silver": 23, "bronze": 17, "total": 67},
+      {"country": "Russia", "gold": 19, "silver": 17, "bronze": 20, "total": 56},
+      {"country": "Germany", "gold": 17, "silver": 10, "bronze": 15, "total": 42},
+      {"country": "France", "gold": 10, "silver": 18, "bronze": 14, "total": 42},
+      {"country": "Japan", "gold": 12, "silver": 8, "bronze": 21, "total": 41},
+      {"country": "Australia", "gold": 8, "silver": 11, "bronze": 10, "total": 29},
+      {"country": "Italy", "gold": 8, "silver": 12, "bronze": 8, "total": 28},
+      {"country": "Canada", "gold": 4, "silver": 3, "bronze": 15, "total": 22}
+    ],
+    "2021": [
+      {"country": "United States", "gold": 39, "silver": 41, "bronze": 33, "total": 113},
+      {"country": "China", "gold": 38, "silver": 32, "bronze": 19, "total": 89},
+      {"country": "ROC", "gold": 20, "silver": 28, "bronze": 23, "total": 71},
+      {"country": "United Kingdom", "gold": 22, "silver": 20, "bronze": 22, "total": 64},
+      {"country": "Japan", "gold": 27, "silver": 14, "bronze": 17, "total": 58},
+      {"country": "Australia", "gold": 17, "silver": 7, "bronze": 22, "total": 46},
+      {"country": "Italy", "gold": 10, "silver": 10, "bronze": 20, "total": 40},
+      {"country": "Germany", "gold": 10, "silver": 11, "bronze": 16, "total": 37},
+      {"country": "Netherlands", "gold": 10, "silver": 12, "bronze": 14, "total": 36},
+      {"country": "France", "gold": 10, "silver": 12, "bronze": 11, "total": 33}
+    ],
+    "2024": [
+      {"country": "United States", "gold": 40, "silver": 44, "bronze": 42, "total": 126},
+      {"country": "China", "gold": 40, "silver": 27, "bronze": 24, "total": 91},
+      {"country": "United Kingdom", "gold": 14, "silver": 22, "bronze": 29, "total": 65},
+      {"country": "France", "gold": 16, "silver": 26, "bronze": 22, "total": 64},
+      {"country": "Australia", "gold": 18, "silver": 19, "bronze": 16, "total": 53},
+      {"country": "Japan", "gold": 20, "silver": 12, "bronze": 13, "total": 45},
+      {"country": "Italy", "gold": 12, "silver": 13, "bronze": 15, "total": 40},
+      {"country": "Netherlands", "gold": 15, "silver": 7, "bronze": 12, "total": 34},
+      {"country": "Germany", "gold": 12, "silver": 13, "bronze": 8, "total": 33},
+      {"country": "South Korea", "gold": 13, "silver": 9, "bronze": 10, "total": 32}
+    ]
+  }
+  
