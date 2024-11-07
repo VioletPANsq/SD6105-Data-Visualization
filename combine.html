@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabbed Navigation with Page 1 D3 Chart</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        /* 主体样式 */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tab-container {
+            display: flex;
+            cursor: pointer;
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+        .tab {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            margin-right: 5px;
+            background-color: #f4f4f9;
+        }
+        .tab.active {
+            background-color: #ffffff;
+            font-weight: bold;
+        }
+        .content {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+        .content.active {
+            display: block;
+        }
+
+        /* D3 Chart 样式 */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .svg-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        /* 其他 D3 样式省略 */
+    </style>
+</head>
+<body>
+
+<div class="tab-container">
+    <div class="tab active" data-target="page1">Page 1</div>
+    <div class="tab" data-target="page2">Page 2</div>
+    <div class="tab" data-target="page3">Page 3</div>
+</div>
+
+<div id="page1" class="content active">
+    <!-- D3 图表容器 -->
+    <div class="container">
+        <div class="header">
+            <h1>Top 10 Countries by Medals</h1>
+            <div id="yearSelectContainer">
+                <label for="yearSelect">Select Year:</label>
+                <select id="yearSelect"></select>
+            </div>
+        </div>
+        <div class="svg-container">
+            <svg width="800" height="400" style="background-color: #f0f8ff;"></svg>
+        </div>
+        <button id="playPauseButton">Pause</button>
+    </div>
+</div>
+
+<div id="page2" class="content">
+    <h2>Page 2</h2>
+    <p>This is content for Page 2.</p>
+</div>
+
+<div id="page3" class="content">
+    <h2>Page 3</h2>
+        <p>This is content for Page 3.</p>
+        
+        <!-- 添加四个截图 -->
+        <div class="screenshot-container">
+            <img src="olympic_rings.png" alt="Screenshot 1" style="width:100%; max-width:400px; margin-bottom: 10px;">
+            <img src="olympic_rings.png" alt="Screenshot 2" style="width:100%; max-width:400px; margin-bottom: 10px;">
+            <img src="olympic_rings.png" alt="Screenshot 3" style="width:100%; max-width:400px; margin-bottom: 10px;">
+            <img src="olympic_rings.png" alt="Screenshot 4" style="width:100%; max-width:400px;">
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    // 切换选项卡显示内容
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.target).classList.add('active');
+        });
+    });
+
+    // D3.js 图表脚本（直接嵌入到 page1 中的容器）
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            const svg = d3.select("svg");
+            const margin = { top: 40, right: 20, bottom: 30, left: 150 };
+            const width = +svg.attr("width") - margin.left - margin.right;
+            const height = +svg.attr("height") - margin.top - margin.bottom;
+            const barHeight = 30;
+            
+            const colors = { gold: "#FFD700", silver: "#C0C0C0", bronze: "#CD7F32" };
+            const minSegmentWidth = 3;
+            const years = Object.keys(data).filter(year => year);
+            let currentIndex = 0;
+            let intervalId = null;
+            let isPlaying = true;
+
+            const chartArea = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const yearSelect = d3.select("#yearSelect");
+            yearSelect.selectAll("option")
+                .data(years)
+                .enter()
+                .append("option")
+                .text(d => d);
+
+            function drawChart(year) {
+                const yearData = data[year].sort((a, b) => b.total - a.total);
+
+                const x = d3.scaleLinear()
+                    .domain([0, d3.max(yearData, d => d.total)])
+                    .range([0, width]);
+
+                const y = d3.scaleBand()
+                    .domain(yearData.map(d => d.country))
+                    .range([0, yearData.length * barHeight])
+                    .padding(0.1);
+
+                const bars = chartArea.selectAll(".bar-group")
+                    .data(yearData, d => d.country);
+
+                bars.exit().remove();
+
+                const barGroups = bars.enter()
+                    .append("g")
+                    .attr("class", "bar-group")
+                    .attr("transform", d => `translate(0,${y(d.country)})`)
+                    .merge(bars)
+                    .transition()
+                    .duration(1000)
+                    .attr("transform", d => `translate(0,${y(d.country)})`);
+
+                barGroups.each(function(d) {
+                    const g = d3.select(this);
+
+                    if (d.gold > 0) {
+                        const goldWidth = Math.max(x(d.gold), minSegmentWidth);
+                        g.selectAll(".gold").remove();
+                        g.append("rect")
+                            .attr("class", "gold")
+                            .attr("x", 0)
+                            .attr("height", y.bandwidth())
+                            .attr("width", goldWidth)
+                            .attr("fill", colors.gold);
+
+                        g.selectAll(".gold-label").remove();
+                        g.append("text")
+                            .attr("class", "gold-label")
+                            .attr("x", goldWidth / 2)
+                            .attr("y", y.bandwidth() / 1.5)
+                            .attr("fill", "black")
+                            .attr("font-size", "10px")
+                            .attr("text-anchor", "middle")
+                            .text(`🥇 ${d.gold}`);
+                    }
+                    
+                    if (d.silver > 0) {
+                        const silverWidth = Math.max(x(d.silver), minSegmentWidth);
+                        g.selectAll(".silver").remove();
+                        g.append("rect")
+                            .attr("class", "silver")
+                            .attr("x", x(d.gold))
+                            .attr("height", y.bandwidth())
+                            .attr("width", silverWidth)
+                            .attr("fill", colors.silver);
+
+                        g.selectAll(".silver-label").remove();
+                        g.append("text")
+                            .attr("class", "silver-label")
+                            .attr("x", x(d.gold) + silverWidth / 2)
+                            .attr("y", y.bandwidth() / 1.5)
+                            .attr("fill", "black")
+                            .attr("font-size", "10px")
+                            .attr("text-anchor", "middle")
+                            .text(`🥈 ${d.silver}`);
+                    }
+
+                    if (d.bronze > 0) {
+                        const bronzeWidth = Math.max(x(d.bronze), minSegmentWidth);
+                        g.selectAll(".bronze").remove();
+                        g.append("rect")
+                            .attr("class", "bronze")
+                            .attr("x", x(d.gold + d.silver))
+                            .attr("height", y.bandwidth())
+                            .attr("width", bronzeWidth)
+                            .attr("fill", colors.bronze);
+
+                        g.selectAll(".bronze-label").remove();
+                        g.append("text")
+                            .attr("class", "bronze-label")
+                            .attr("x", x(d.gold + d.silver) + bronzeWidth / 2)
+                            .attr("y", y.bandwidth() / 1.5)
+                            .attr("fill", "black")
+                            .attr("font-size", "10px")
+                            .attr("text-anchor", "middle")
+                            .text(`🥉 ${d.bronze}`);
+                    }
+                });
+
+                chartArea.selectAll(".axis").remove();
+                chartArea.append("g")
+                    .attr("class", "axis axis--x")
+                    .call(d3.axisTop(x))
+                    .attr("transform", `translate(0,${0})`);
+                chartArea.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(d3.axisLeft(y));
+            }
+
+            function togglePlayPause() {
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    startAnimation();
+                    d3.select("#playPauseButton").text("Pause");
+                } else {
+                    clearInterval(intervalId);
+                    chartArea.selectAll(".bar-group").interrupt();
+                    d3.select("#playPauseButton").text("Play");
+                }
+            }
+
+            function startAnimation() {
+                clearInterval(intervalId);
+                intervalId = setInterval(() => {
+                    drawChart(years[currentIndex]);
+                    yearSelect.property("value", years[currentIndex]);
+                    currentIndex = (currentIndex + 1) % years.length;
+                }, 1000);
+            }
+
+            yearSelect.on("change", function() {
+                clearInterval(intervalId);
+                isPlaying = false;
+                d3.select("#playPauseButton").text("Play");
+                currentIndex = years.indexOf(this.value);
+                drawChart(this.value);
+            });
+
+            d3.select("#playPauseButton").on("click", togglePlayPause);
+            drawChart(years[currentIndex]);
+            startAnimation();
+        })
+        .catch(error => console.error('Error loading the data:', error));
+</script>
+
+</body>
+</html>
